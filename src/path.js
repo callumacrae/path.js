@@ -51,7 +51,7 @@ Path.prototype.d = function getPathString(options) {
 	return this.points
 		.map((point, i, allPoints) => {
 			if (i === 0 || options.type === 'absolute') {
-				return point[0] + point.slice(1).map((num) => toImpreciseString(num)).join(',');
+				return point[0] + point.slice(1).map(toImpreciseString).join(',');
 			}
 
 			const prev = allPoints[i - 1];
@@ -96,6 +96,10 @@ Path.scale = function initPathScale(pathStrings, options) {
 	const sectionSize = 1 / (paths.length - 1);
 
 	return function pathScale(x) {
+		if (options.loop) {
+			x %= 1;
+		}
+
 		// Calculate which two paths to mix, and how much to actually mix them by
 		const index = Math.floor(x / sectionSize);
 		const realX = (x % sectionSize) / sectionSize;

@@ -66,6 +66,9 @@ test('scale looping', (t) => {
 	t.is(pathScale0(0.5).toString(), 'M100.7,181.3c0,0,17,30,-40,38.3');
 	t.is(pathScale0(0.75).toString(), 'M100.7,181.3c0,0,-6.9,39.7,-47.5,18.6');
 	t.is(pathScale0(1).toString(), 'M90.7,181.3c0,0,48.4,-23.7,72.1,19');
+	t.is(pathScale0(1.25).toString(), 'M100.7,181.3c0,0,24.2,32.3,-19,47.3');
+	t.is(pathScale0(100.75).toString(), 'M100.7,181.3c0,0,-6.9,39.7,-47.5,18.6');
+	t.is(pathScale0(100.85).toString(), 'M96.7,181.3c0,0,15.2,14.3,0.3,18.8');
 
 	t.pass();
 });
