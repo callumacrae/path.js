@@ -2,7 +2,8 @@
   "name": "path-js",
   "version": "0.1.0",
   "description": "A library for morphing between SVG paths",
-  "main": "src/path.js",
+  "main": "dist/path.js",
+  "esnext:main": "src/path.js",
   "scripts": {
     "prepublish": "npm run build",
     "build": "babel src --out-dir dist --source-maps",
