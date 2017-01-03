@@ -1,4 +1,4 @@
-# path.js
+# path.js [![Build Status](https://travis-ci.org/SamKnows/path.js.svg?branch=master)](https://travis-ci.org/SamKnows/path.js)
 
 > A library for morphing between SVG paths, written at [SamKnows].
 
