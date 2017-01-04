@@ -6,7 +6,7 @@ function Path(d) {
 	if (Array.isArray(d)) {
 		this.points = d;
 	} else {
-		const points = d.trim()
+		this.points = d.trim()
 			.split(/\s*(?=[A-Z])/i)
 			.map((pointString) => {
 				return pointString.trim()
@@ -26,16 +26,14 @@ function Path(d) {
 
 				const prev = allPoints[i - 1];
 
-				pointArray[0] = pointArray[0].toUpperCase();
+				return pointArray.map((point, j) => {
+					if (j === 0) {
+						return point.toUpperCase();
+					}
 
-				pointArray.slice(1).forEach((num, i) => {
-					pointArray[i + 1] += prev[prev.length - (i % 2 === 0 ? 2 : 1)];
+					return point + prev[prev.length - (j % 2 === 0 ? 1 : 2)];
 				});
-
-				return pointArray;
 			});
-
-		this.points = points;
 
 		this._originalPath = d;
 	}
@@ -56,8 +54,8 @@ Path.prototype.d = function getPathString(options) {
 
 			const prev = allPoints[i - 1];
 
-			return point[0].toLowerCase() + point.slice(1).map((num, i) => {
-					return toImpreciseString(num - prev[prev.length - (i % 2 === 0 ? 2 : 1)]);
+			return point[0].toLowerCase() + point.slice(1).map((num, j) => {
+					return toImpreciseString(num - prev[prev.length - (j % 2 === 0 ? 2 : 1)]);
 				}).join(',');
 		})
 		.join('');
@@ -76,7 +74,7 @@ Path.scale = function initPathScale(pathStrings, options) {
 
 	const paths = pathStrings.map((str) => str instanceof Path ? str : new Path(str));
 
-	// Check that what we're trying to do is actually possible
+	// Check that what we're trying to do is actually possible with this lib
 	paths.slice(1).forEach((path) => {
 		if (path.points.length !== paths[0].points.length) {
 			throw new Error('Both paths have to be the same length, sorry');
@@ -117,7 +115,7 @@ Path.scale = function initPathScale(pathStrings, options) {
 			const bPoint = b.points[i];
 
 			const newPoints = aPoint.slice(1)
-				.map((num, i) => num * (1 - realX) + bPoint[i + 1] * realX);
+				.map((num, j) => num * (1 - realX) + bPoint[j + 1] * realX);
 
 			return [aPoint[0], ...newPoints];
 		});
