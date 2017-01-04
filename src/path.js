@@ -26,13 +26,13 @@ export default function Path(d) {
 
 				const prev = allPoints[i - 1];
 
-				return pointArray.map((point, j) => {
-					if (j === 0) {
-						return point.toUpperCase();
-					}
+				pointArray[0] = pointArray[0].toUpperCase();
 
-					return point + prev[prev.length - (j % 2 === 0 ? 1 : 2)];
+				pointArray.slice(1).forEach((num, i) => {
+					pointArray[i + 1] += prev[prev.length - (i % 2 === 0 ? 2 : 1)];
 				});
+
+				return pointArray;
 			});
 
 		this._originalPath = d;
