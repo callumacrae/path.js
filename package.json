@@ -7,7 +7,7 @@
   "scripts": {
     "prepublish": "npm run build",
     "build": "rollup -c",
-    "test": "ava"
+    "test": "npm run build && ava"
   },
   "repository": {
     "type": "git",

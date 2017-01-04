@@ -1,5 +1,5 @@
 import test from 'ava';
-import Path from './src/path';
+import Path from './dist/path';
 
 test('Path constructor', (t) => {
 	const path0 = new Path('M 100 200 L 300 400');
