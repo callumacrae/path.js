@@ -1,4 +1,4 @@
-function Path(d) {
+export default function Path(d) {
 	if (!(this instanceof Path)) {
 		return new Path(d);
 	}
@@ -38,8 +38,6 @@ function Path(d) {
 		this._originalPath = d;
 	}
 }
-
-module.exports = Path;
 
 Path.prototype.d = function getPathString(options) {
 	options = Object.assign({
