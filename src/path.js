@@ -105,20 +105,7 @@ Path.scale = function initPathScale(pathStrings, options) {
 			return paths[index];
 		}
 
-		const a = paths[index];
-		const b = paths[index + 1];
-
-		// Mix the two lines by mixing the individual points together
-		const newPoints = a.points.map((aPoint, i) => {
-			const bPoint = b.points[i];
-
-			const newPoints = aPoint.slice(1)
-				.map((num, j) => num * (1 - realX) + bPoint[j + 1] * realX);
-
-			return [aPoint[0], ...newPoints];
-		});
-
-		return new Path(newPoints);
+		return Path.mix(paths[index], paths[index + 1], realX);
 	};
 };
 
@@ -131,15 +118,44 @@ Path.mix = function mixPaths(a, b, x = 0.5) {
 		return Path.mix(a, new Path(b), x);
 	}
 
+	if (a.points.length !== b.points.length) {
+		throw new Error('Both paths have to be the same length, sorry');
+	}
+
 	// Mix the two lines by mixing the individual points together
-	const newPoints = a.points.map((aPoint, i) => {
-		const bPoint = b.points[i];
-
-		const newPoints = aPoint.slice(1)
-			.map((num, j) => num * (1 - x) + bPoint[j + 1] * x);
-
-		return [aPoint[0], ...newPoints];
-	});
+	const newPoints = a.points.map((aPoint, i) => mixPoints(a, b, i, x));
 
 	return new Path(newPoints);
 };
+
+function mixPoints(a, b, i, x) {
+	let aPoints = a.points[i];
+	let bPoints = b.points[i];
+
+	if (aPoints[0] === 'S' && bPoints[0] === 'C') {
+		aPoints = sToC(aPoints, a.points[i - 1]);
+	} else if (bPoints[0] === 'S' && aPoints[0] === 'C') {
+		bPoints = sToC(bPoints, b.points[i - 1]);
+	}
+
+	function sToC(points, prev) {
+		let x1, y1;
+
+		if (prev[0] === 'C' || prev[0] === 'S') {
+			x1 = prev[prev.length - 2] * 2 - prev[prev.length - 4];
+			y1 = prev[prev.length - 1] * 2 - prev[prev.length - 3];
+		} else {
+			x1 = prev[prev.length - 1];
+			y1 = prev[prev.length - 2];
+		}
+
+		return ['C', x1, y1, ...points.slice(1)];
+	}
+
+	if (aPoints[0] === bPoints[0]) {
+		const newPoints = aPoints.slice(1).map((num, j) => num * (1 - x) + bPoints[j + 1] * x);
+		return [aPoints[0], ...newPoints];
+	}
+
+	throw new Error('Mixing those command types isn\'t supported, sorry');
+}
