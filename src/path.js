@@ -39,6 +39,44 @@ export default function Path(d) {
 	}
 }
 
+Path.prototype.reverse = function reversePath() {
+	// convert all curves to C
+	const points = this.points.map((num, i) => {
+		if (num[0] === 'M' || num[0] === 'L' || num[0] === 'C') {
+			return num.slice();
+		}
+
+		if (num[0] === 'S') {
+			return sToC(num, this.points[i - 1]);
+		}
+
+		throw new Error('Reversing paths with that in is not yet supported, sorry');
+	});
+
+	// Reverse
+	const reversedPoints = [
+		['M', ...points[points.length - 1].splice(-2, 2)]
+	];
+
+	// Don't hit 0: that'll just equal 'M'
+	for (let i = points.length - 1; i >= 1; i--) {
+		// reverse arguments
+		const oldPoint = points[i];
+		const newPoint = [oldPoint[0]];
+
+		for (let j = oldPoint.length - 2; j > 0; j -= 2) {
+			newPoint.push(...oldPoint.slice(j, j + 2));
+		}
+
+		// grab coordinates from prev
+		newPoint.push(...points[i - 1].splice(-2, 2));
+
+		reversedPoints.push(newPoint);
+	}
+
+	return new Path(reversedPoints);
+};
+
 Path.prototype.d = function getPathString(options) {
 	options = Object.assign({
 		type: 'relative',
@@ -128,6 +166,10 @@ Path.mix = function mixPaths(a, b, x = 0.5) {
 	return new Path(newPoints);
 };
 
+Path.reverse = function reversePath(path) {
+	return new Path(path).reverse().d();
+};
+
 function mixPoints(a, b, i, x) {
 	let aPoints = a.points[i];
 	let bPoints = b.points[i];
@@ -138,24 +180,24 @@ function mixPoints(a, b, i, x) {
 		bPoints = sToC(bPoints, b.points[i - 1]);
 	}
 
-	function sToC(points, prev) {
-		let x1, y1;
-
-		if (prev[0] === 'C' || prev[0] === 'S') {
-			x1 = prev[prev.length - 2] * 2 - prev[prev.length - 4];
-			y1 = prev[prev.length - 1] * 2 - prev[prev.length - 3];
-		} else {
-			x1 = prev[prev.length - 1];
-			y1 = prev[prev.length - 2];
-		}
-
-		return ['C', x1, y1, ...points.slice(1)];
-	}
-
 	if (aPoints[0] === bPoints[0]) {
 		const newPoints = aPoints.slice(1).map((num, j) => num * (1 - x) + bPoints[j + 1] * x);
 		return [aPoints[0], ...newPoints];
 	}
 
 	throw new Error('Mixing those command types isn\'t supported, sorry');
+}
+
+function sToC(points, prev) {
+	let x1, y1;
+
+	if (prev[0] === 'C' || prev[0] === 'S') {
+		x1 = prev[prev.length - 2] * 2 - prev[prev.length - 4];
+		y1 = prev[prev.length - 1] * 2 - prev[prev.length - 3];
+	} else {
+		x1 = prev[prev.length - 1];
+		y1 = prev[prev.length - 2];
+	}
+
+	return ['C', x1, y1, ...points.slice(1)];
 }

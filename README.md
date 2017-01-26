@@ -58,6 +58,11 @@ says how much of each should be used.
 Be aware that if you use this, you lose the performance gains from using a
 scale.
 
+### `path.reverse()`
+
+This function simply reverses the points of a line - you get the same line, but
+backwards.
+
 ## License
 
 Released under the MIT license.
