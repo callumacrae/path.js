@@ -49,6 +49,15 @@ pathScale(0.75); // M150,100l0,100
 pathScale(1); // M100,100l100,100
 ```
 
+### `path.mix()`
+
+If you don't want the complexity that comes with a scale, use `path.mix()`
+instead. It takes three arguments: two paths, and a number between 0 and 1 that
+says how much of each should be used.
+
+Be aware that if you use this, you lose the performance gains from using a
+scale.
+
 ## License
 
 Released under the MIT license.

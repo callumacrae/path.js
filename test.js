@@ -73,6 +73,28 @@ test('scale looping', (t) => {
 	t.pass();
 });
 
+test('Path.mix()', (t) => {
+	const a = 'M 100 100 L 200 200';
+	const b = 'M 200 100 L 100 200';
+
+	t.is(Path.mix(a, b, 0).toString(), 'M100,100l100,100');
+	t.is(Path.mix(a, b, 0.25).toString(), 'M125,100l50,100');
+	t.is(Path.mix(a, b, 0.5).toString(), 'M150,100l0,100');
+	t.is(Path.mix(a, b, 0.75).toString(), 'M175,100l-50,100');
+	t.is(Path.mix(a, b, 1).toString(), 'M200,100l-100,100');
+
+	t.pass();
+});
+
+test('Path.mix() default x value of 0.5', (t) => {
+	const a = 'M 100 100 L 200 200';
+	const b = 'M 200 100 L 100 200';
+
+	t.is(Path.mix(a, b).toString(), 'M150,100l0,100');
+
+	t.pass();
+});
+
 // this is a regression test
 test('tail weirdness', (t) => {
 	const tailScale = Path.scale([

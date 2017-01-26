@@ -121,3 +121,25 @@ Path.scale = function initPathScale(pathStrings, options) {
 		return new Path(newPoints);
 	};
 };
+
+Path.mix = function mixPaths(a, b, x = 0.5) {
+	if (!(a instanceof Path)) {
+		return Path.mix(new Path(a), b, x);
+	}
+
+	if (!(b instanceof Path)) {
+		return Path.mix(a, new Path(b), x);
+	}
+
+	// Mix the two lines by mixing the individual points together
+	const newPoints = a.points.map((aPoint, i) => {
+		const bPoint = b.points[i];
+
+		const newPoints = aPoint.slice(1)
+			.map((num, j) => num * (1 - x) + bPoint[j + 1] * x);
+
+		return [aPoint[0], ...newPoints];
+	});
+
+	return new Path(newPoints);
+};
