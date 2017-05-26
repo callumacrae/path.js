@@ -117,7 +117,7 @@ Path.scale = function initPathScale(pathStrings, options) {
 		}
 
 		path.points.forEach(([command], i) => {
-			if (command !== paths[0].points[i][0]) {
+			if (!mixable(command, paths[0].points[i][0])) {
 				throw new Error('Command types have to match, sorry');
 			}
 		});
@@ -200,4 +200,20 @@ function sToC(points, prev) {
 	}
 
 	return ['C', x1, y1, ...points.slice(1)];
+}
+
+function mixable(a, b) {
+	if (a === b) {
+		return true;
+	}
+
+	if (a === 'C' && b === 'S') {
+		return true;
+	}
+
+	if (a === 'S' && b === 'C') {
+		return true;
+	}
+
+	return false;
 }

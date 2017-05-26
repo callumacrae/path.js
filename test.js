@@ -124,6 +124,20 @@ test('Path.mix() should support mixing S and C after M', (t) => {
 	t.pass();
 });
 
+test('Path.scale() should support mixing S and C after M', (t) => {
+	const pathScale = Path.scale([
+		'M258,351c-44-9-67-43-36-60',
+		'M270,340s-93-4-54-50'
+	]);
+
+	t.is(typeof pathScale, 'function');
+	t.is(pathScale(0).toString(), 'M258,351c-44,-9,-67,-43,-36,-60');
+	t.is(pathScale(0.5).toString(), 'M264,345.5c13,-39.5,-80,-23.5,-45,-55');
+	t.is(pathScale(1).toString(), 'M270,340s-93,-4,-54,-50');
+
+	t.pass();
+});
+
 test('path.reverse()', (t) => {
 	const path0 = new Path('M 100 200 L 300 400');
 
